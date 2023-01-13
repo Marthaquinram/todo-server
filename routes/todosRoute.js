@@ -1,13 +1,25 @@
-const { Router } = require('express');
-const { getTodo, saveTodo } = require('../controller/todosController');
+const express = require('express');
+const { createTodo, getTodos,
+  getTodo, deleteToDo, updateToDo } = require('../controller/todosController');
 
 
-const router = Router();
-router.get('/', getTodo);
-router.post("/save", saveTodo);
 
-// router.post("/update", updateToDo);
+const router = express.Router();
+// GET all todos
+router.get('/', getTodos)
 
-// router.post("/delete", deleteToDo);
+//GET a single ToDo
+router.get('/:id', getTodo)
+
+//POST a new ToDo
+router.post('/', createTodo)
+
+//DELETE a new ToDo
+router.delete('/:id', deleteToDo)
+
+//UPDATE a new ToDo
+//router.patch
+router.put('/:id', updateToDo)
+
 
 module.exports = router;

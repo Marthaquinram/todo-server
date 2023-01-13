@@ -1,5 +1,5 @@
-// const todosRoutes = require('./routes/todos');
-const routes = require('./routes/todosRoute');
+const todosRoutes = require('./routes/todosRoute');
+
 
 //------DOTENV Config-------//
 require('dotenv').config();
@@ -9,12 +9,16 @@ const cors = require('cors');
 
 
 //-------APP USING EXPRESS & JSON --------//
-const PORT = process.env.PORT || 3002;
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//MIDDLEWARE
+app.use((req, res, next) => {
+  console.log(req.path, req.method)
+  next();
+})
 
 //------------- ERROR HANDLING -------------//
 const notFoundHandler = require('./handlers/error404.js')
@@ -25,27 +29,21 @@ const errorHandler = require('./handlers/error500.js')
 const mongoose = require('mongoose')
 mongoose.set("strictQuery", true);
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("Connected to Mongoose database");
+    app.listen(process.env.PORT, () =>
+      console.log('Connected to Mongoose database & listening on port', process.env.PORT));
+
   }).catch((error) => {
     console.log(error);
 
-    app.use(routes)
   });
 
 
 
-
-
-
-
 //------------- ROUTES -------------//
-app.get('/', (req, res) => {
-  res.send('SERVER IS ALIVE!!');
-})
-
-
+app.use('/api/todos', todosRoutes);
+// app.post('/save', saveTodo)
 
 
 
@@ -53,6 +51,6 @@ app.get('/', (req, res) => {
 app.get('*', notFoundHandler);
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`listening on ${PORT}`));
+
 
 module.exports = app;
