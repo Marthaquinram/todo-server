@@ -5,11 +5,13 @@ const { Schema } = mongoose;
 const todoSchema = new Schema({
   text: {
     type: String,
-    require: true,
+    required: true
   },
+  completed: {
+    type: Boolean,
+    required: true
+  }
+}, { timestamps: true })
 
-});
 
-const Todo = mongoose.model('Todo', todoSchema);
-
-module.exports = Todo;
+module.exports = mongoose.model('Todo', todoSchema);
